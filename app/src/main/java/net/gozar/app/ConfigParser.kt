@@ -276,7 +276,7 @@ object ConfigParser {
             name = name, protocol = "hysteria2", address = address, port = port,
             password = pctDecode(password),
             sni = p["sni"].orEmpty().ifEmpty { p["peer"].orEmpty() },
-            host = p["host"] ?: if (network == "grpc") p["authority"].orEmpty() else "",
+            host = p["host"].orEmpty(),
             alpn = p["alpn"] ?: "",
             security = "tls",
             hyObfs = p["obfs"] ?: "",
