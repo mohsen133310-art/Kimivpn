@@ -343,32 +343,32 @@ import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.math.roundToInt
 
-private val BrandBlue = Color(0xFF3D6AD6)
-private val SplashBackground = Color(0xFF13234A)
+private val BrandBlue = Color(0xFF7542C8)
+private val SplashBackground = Color(0xFFF7F3FC)
 
 private val GnetLightColors = lightColorScheme(
-    primary = Color(0xFF2557D6),
+    primary = Color(0xFF7542C8),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFDCE7FF),
-    onPrimaryContainer = Color(0xFF08214F),
-    inversePrimary = Color(0xFFA9C4FF),
-    secondary = Color(0xFF4A6288),
+    primaryContainer = Color(0xFFEBDDFF),
+    onPrimaryContainer = Color(0xFF281044),
+    inversePrimary = Color(0xFFD2B8FF),
+    secondary = Color(0xFF67527D),
     onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFCFDDF2),
-    onSecondaryContainer = Color(0xFF17212F),
-    tertiary = Color(0xFF0A7C99),
+    secondaryContainer = Color(0xFFE9DDF5),
+    onSecondaryContainer = Color(0xFF251B30),
+    tertiary = Color(0xFF9462B8),
     onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFFC9EDF7),
-    onTertiaryContainer = Color(0xFF04333F),
-    background = Color(0xFFEBF0F8),
+    tertiaryContainer = Color(0xFFF0DFFF),
+    onTertiaryContainer = Color(0xFF32164B),
+    background = Color(0xFFF8F5FC),
     onBackground = Color(0xFF131720),
     surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF131720),
-    surfaceVariant = Color(0xFFE1E8F4),
-    onSurfaceVariant = Color(0xFF566276),
-    surfaceTint = Color(0xFF2557D6),
+    surfaceVariant = Color(0xFFEDE6F5),
+    onSurfaceVariant = Color(0xFF655A70),
+    surfaceTint = Color(0xFF7542C8),
     surfaceBright = Color(0xFFFFFFFF),
-    surfaceDim = Color(0xFFD7DFEC),
+    surfaceDim = Color(0xFFE3DAEC),
     surfaceContainerLowest = Color(0xFFFFFFFF),
     surfaceContainerLow = Color(0xFFFFFFFF),
     surfaceContainer = Color(0xFFFDFEFF),
@@ -380,20 +380,20 @@ private val GnetLightColors = lightColorScheme(
     onError = Color(0xFFFFFFFF),
     errorContainer = Color(0xFFFFDAD6),
     onErrorContainer = Color(0xFF410002),
-    outline = Color(0xFFB6C1D2),
-    outlineVariant = Color(0xFFD7DFEC),
+    outline = Color(0xFFC9BBD8),
+    outlineVariant = Color(0xFFE4D9EF),
     scrim = Color(0xFF000000)
 )
 
 private val GnetDarkColors = darkColorScheme(
-    primary = Color(0xFF6CA0FF),
+    primary = Color(0xFFC6A5FF),
     onPrimary = Color(0xFF071226),
-    primaryContainer = Color(0xFF263A60),
-    onPrimaryContainer = Color(0xFFD6E3FF),
-    secondary = Color(0xFF93A7C9),
+    primaryContainer = Color(0xFF493263),
+    onPrimaryContainer = Color(0xFFF0E5FF),
+    secondary = Color(0xFFD0B9E8),
     onSecondary = Color(0xFF0E1626),
-    secondaryContainer = Color(0xFF1C2740),
-    onSecondaryContainer = Color(0xFFD9E2F2),
+    secondaryContainer = Color(0xFF342641),
+    onSecondaryContainer = Color(0xFFEFE2FA),
     background = Color(0xFF0E1422),
     onBackground = Color(0xFFE6EAF2),
     surface = Color(0xFF161D2E),
@@ -407,32 +407,32 @@ private val GnetDarkColors = darkColorScheme(
     surfaceContainer = Color(0xFF161D2E),
     surfaceContainerHigh = Color(0xFF1D2537),
     surfaceContainerHighest = Color(0xFF232C40),
-    tertiary = Color(0xFF35E0FF),
+    tertiary = Color(0xFFE0B8FF),
     onTertiary = Color(0xFF042430),
-    tertiaryContainer = Color(0xFF10394A),
-    onTertiaryContainer = Color(0xFFC5F1FD),
-    inversePrimary = Color(0xFF2557D6),
-    surfaceTint = Color(0xFF6CA0FF),
+    tertiaryContainer = Color(0xFF432956),
+    onTertiaryContainer = Color(0xFFF4E2FF),
+    inversePrimary = Color(0xFF7542C8),
+    surfaceTint = Color(0xFFC6A5FF),
     inverseSurface = Color(0xFFE6EAF2),
     inverseOnSurface = Color(0xFF161D2E),
     error = Color(0xFFFF7A7A),
     onError = Color(0xFF2A0A0A),
     errorContainer = Color(0xFF5A1A1A),
     onErrorContainer = Color(0xFFFFDAD6),
-    outline = Color(0xFF38445C),
-    outlineVariant = Color(0xFF283244),
+    outline = Color(0xFF594A68),
+    outlineVariant = Color(0xFF42364F),
     scrim = Color(0xFF000000)
 )
 
 private val GnetAmoledColors = darkColorScheme(
-    primary = Color(0xFF6CA0FF),
+    primary = Color(0xFFC6A5FF),
     onPrimary = Color(0xFF071226),
     primaryContainer = Color(0xFF1B2944),
-    onPrimaryContainer = Color(0xFFD6E3FF),
-    secondary = Color(0xFF93A7C9),
+    onPrimaryContainer = Color(0xFFF0E5FF),
+    secondary = Color(0xFFD0B9E8),
     onSecondary = Color(0xFF0E1626),
     secondaryContainer = Color(0xFF11161F),
-    onSecondaryContainer = Color(0xFFD9E2F2),
+    onSecondaryContainer = Color(0xFFEFE2FA),
     background = Color(0xFF000000),
     onBackground = Color(0xFFE6EAF2),
     surface = Color(0xFF000000),
@@ -446,12 +446,12 @@ private val GnetAmoledColors = darkColorScheme(
     surfaceContainer = Color(0xFF0B0E14),
     surfaceContainerHigh = Color(0xFF0F131B),
     surfaceContainerHighest = Color(0xFF12161F),
-    tertiary = Color(0xFF35E0FF),
+    tertiary = Color(0xFFE0B8FF),
     onTertiary = Color(0xFF042430),
     tertiaryContainer = Color(0xFF0A2733),
-    onTertiaryContainer = Color(0xFFC5F1FD),
-    inversePrimary = Color(0xFF2557D6),
-    surfaceTint = Color(0xFF6CA0FF),
+    onTertiaryContainer = Color(0xFFF4E2FF),
+    inversePrimary = Color(0xFF7542C8),
+    surfaceTint = Color(0xFFC6A5FF),
     inverseSurface = Color(0xFFE6EAF2),
     inverseOnSurface = Color(0xFF0B0E14),
     error = Color(0xFFFF7A7A),
@@ -466,12 +466,12 @@ private val GnetAmoledColors = darkColorScheme(
 private val AppCyan: Color
     @Composable get() =
         if (MaterialTheme.colorScheme.background.luminance() < 0.5f) Color(0xFF35E0FF)
-        else Color(0xFF0A7C99)
+        else Color(0xFF9462B8)
 
 private val AppAqua: Color
     @Composable get() =
         if (MaterialTheme.colorScheme.background.luminance() < 0.5f) Color(0xFF2AE6FF)
-        else Color(0xFF067E9B)
+        else Color(0xFF8650B2)
 
 internal val LocalLang = compositionLocalOf { Lang.EN }
 
