@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GozarNet"
+rootProject.name = "KimiVPN"
 include(":app")
 include(":strongswan")
