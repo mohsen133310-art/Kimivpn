@@ -3224,6 +3224,15 @@ private fun ManualConfigScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        if (protocol == "socks") {
+            OutlinedTextField(uuid, { uuid = it }, label = { Text(t("ssh_username") + " (اختیاری)") }, singleLine = true, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(password, { password = it }, label = { Text(t("password") + " (اختیاری)") }, singleLine = true, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth())
+            Text(
+                "برای SOCKS5 فقط IP و پورت کافی است؛ اگر سرور احراز هویت دارد، نام کاربری و رمز را هم وارد کن.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         if (protocol == "trojan" || protocol == "shadowsocks" || protocol == "hysteria2")
             OutlinedTextField(password, { password = it }, label = { Text(t("password")) }, singleLine = true, shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth())
         if (protocol == "hysteria2") {
