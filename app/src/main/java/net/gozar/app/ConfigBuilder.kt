@@ -711,9 +711,11 @@ object ConfigBuilder {
                 stream.put("xhttpSettings", xh)
             }
             "grpc" -> {
-                stream.put("grpcSettings", JSONObject()
+                val grpc = JSONObject()
                     .put("serviceName", config.serviceName)
-                    .put("multiMode", config.mode == "multi"))
+                    .put("multiMode", config.mode == "multi")
+                if (config.host.isNotEmpty()) grpc.put("authority", config.host)
+                stream.put("grpcSettings", grpc)
             }
             "http" -> {
                 val h = JSONObject().put("path", config.path.ifEmpty { "/" })
