@@ -298,7 +298,7 @@ class ConfigStore private constructor(context: Context) {
 
     fun seedBundledVlessServersIfNeeded() {
         val seedKey = "KIMI_BUNDLED_VLESS_SERVERS_VERSION"
-        if (prefs.getInt(seedKey, 0) >= 1) return
+        if (prefs.getInt(seedKey, 0) >= 2) return
 
         val bundled = listOf(
             ProxyConfig(
@@ -332,6 +332,38 @@ class ConfigStore private constructor(context: Context) {
                 host = "bg2.oncloudvpn.com",
                 mode = "gun",
                 source = ConfigSource.COMMUNITY
+            ),
+            ProxyConfig(
+                name = "VLESS Reality TCP (Mozilla)",
+                protocol = "vless",
+                address = "107.181.151.128",
+                port = 443,
+                uuid = "88742d38-3f5c-4b9c-b256-7df5db8257ec",
+                encryption = "none",
+                flow = "xtls-rprx-vision",
+                network = "tcp",
+                security = "reality",
+                sni = "www.mozilla.org",
+                publicKey = "zfsjt2A8ur0qHWIuCG7F9W4wZN3VTuL6fkTljC-9R0s",
+                shortId = "8f79726c5002",
+                fingerprint = "chrome",
+                source = ConfigSource.COMMUNITY
+            ),
+            ProxyConfig(
+                name = "VLESS Reality gRPC",
+                protocol = "vless",
+                address = "150.40.126.22",
+                port = 443,
+                uuid = "2f35965a-9a9b-45fd-ba32-987296dfb6be",
+                encryption = "none",
+                network = "grpc",
+                security = "reality",
+                sni = "rs4.univesalsrv.com",
+                publicKey = "sXsJ4ET-50TYqlhKZf03nPQr2JIy1F0D4m6lOsI0cAs",
+                shortId = "861ac7d66953e55f",
+                fingerprint = "chrome",
+                serviceName = "media.v1.StreamService",
+                source = ConfigSource.COMMUNITY
             )
         )
 
@@ -345,7 +377,7 @@ class ConfigStore private constructor(context: Context) {
             _configs.value = _configs.value + additions
             persistConfigs()
         }
-        prefs.edit().putInt(seedKey, 1).apply()
+        prefs.edit().putInt(seedKey, 2).apply()
     }
 
     fun seedDefaultAetherIfNeeded(): ProxyConfig? {
