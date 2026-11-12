@@ -296,6 +296,58 @@ class ConfigStore private constructor(context: Context) {
         persistConfigs()
     }
 
+    fun seedBundledVlessServersIfNeeded() {
+        val seedKey = "KIMI_BUNDLED_VLESS_SERVERS_VERSION"
+        if (prefs.getInt(seedKey, 0) >= 1) return
+
+        val bundled = listOf(
+            ProxyConfig(
+                name = "VLESS WS (DE)",
+                protocol = "vless",
+                address = "yx.l110.us.ci",
+                port = 443,
+                uuid = "99c5b713-dedf-4a10-8070-916ff3f49b0e",
+                encryption = "none",
+                network = "ws",
+                security = "tls",
+                sni = "fs.qicai99.com",
+                fingerprint = "chrome",
+                path = "/",
+                host = "fs.qicai99.com",
+                source = ConfigSource.COMMUNITY
+            ),
+            ProxyConfig(
+                name = "VLESS gRPC",
+                protocol = "vless",
+                address = "88.80.150.15",
+                port = 443,
+                uuid = "1d46250c-f015-439d-a7fd-c4d9e2a4c63d",
+                encryption = "none",
+                network = "grpc",
+                security = "tls",
+                sni = "bg2.oncloudvpn.com",
+                fingerprint = "edge",
+                alpn = "h2",
+                serviceName = "grpc",
+                host = "bg2.oncloudvpn.com",
+                mode = "gun",
+                source = ConfigSource.COMMUNITY
+            )
+        )
+
+        val existing = _configs.value.map {
+            "${it.protocol}|${it.address}|${it.port}|${it.uuid}"
+        }.toSet()
+        val additions = bundled.filterNot {
+            "${it.protocol}|${it.address}|${it.port}|${it.uuid}" in existing
+        }
+        if (additions.isNotEmpty()) {
+            _configs.value = _configs.value + additions
+            persistConfigs()
+        }
+        prefs.edit().putInt(seedKey, 1).apply()
+    }
+
     fun seedDefaultAetherIfNeeded(): ProxyConfig? {
         if (prefs.getBoolean(KEY_AETHER_SEEDED, false)) return null
         prefs.edit().putBoolean(KEY_AETHER_SEEDED, true).apply()
