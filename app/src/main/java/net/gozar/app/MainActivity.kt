@@ -1168,7 +1168,25 @@ private fun GozarApp(
         store.awaitReady()
         store.seedDefaultAetherIfNeeded()
         store.seedBundledVlessServersIfNeeded()
+        store.removeKimiTimedSubscriptionIfExpired()
+        val kimiSub = store.seedKimiTimedSubscriptionIfNeeded()
+        if (kimiSub != null) {
+            runCatching {
+                val result = SubscriptionFetcher.fetchFull(kimiSub.url, ConfigSource.COMMUNITY)
+                val info = result.userInfo
+                store.upsertSubscription(
+                    kimiSub.copy(
+                        used = info?.used ?: 0L,
+                        total = info?.total ?: 0L,
+                        expire = kimiSub.expire,
+                        lastUpdated = System.currentTimeMillis()
+                    ),
+                    result.configs
+                )
+            }
+        }
         while (true) {
+            store.removeKimiTimedSubscriptionIfExpired()
             SubscriptionRefresher.refreshStale(store)
             delay(30 * 60 * 1000L)
         }
