@@ -368,6 +368,31 @@ class ConfigStore private constructor(context: Context) {
         return cfg
     }
 
+    // Public community subscription: activated once per installation and removed after seven days.
+    fun seedKimiTimedSubscriptionIfNeeded(): Subscription? {
+        val key = "KIMI_SHADOW_SUB_ACTIVATED_AT"
+        val activatedAt = prefs.getLong(key, 0L)
+        if (activatedAt > 0L) return null
+        val now = System.currentTimeMillis()
+        prefs.edit().putLong(key, now).apply()
+        val sub = Subscription(
+            name = "V2rayShad0w (7 days)",
+            url = "https://i.bartsimpson1341.workers.dev/sub/ded0195e-8098-4895-af8b-438d1072a3c4?display=V2rayShad0w-5GB-7D%28464%29",
+            expire = (now + 7L * 24 * 60 * 60 * 1000) / 1000,
+            lastUpdated = 0L,
+            id = "kimi-v2rayshadow-7d"
+        )
+        _subscriptions.value = _subscriptions.value.filterNot { it.id == sub.id } + sub
+        persistSubscriptions()
+        return sub
+    }
+
+    fun removeKimiTimedSubscriptionIfExpired() {
+        val activatedAt = prefs.getLong("KIMI_SHADOW_SUB_ACTIVATED_AT", 0L)
+        if (activatedAt <= 0L || System.currentTimeMillis() < activatedAt + 7L * 24 * 60 * 60 * 1000) return
+        deleteSubscription("kimi-v2rayshadow-7d")
+    }
+
     fun upsertSubscription(sub: Subscription, fetched: List<ProxyConfig>) {
         val oldBySig = _configs.value.filter { it.subId == sub.id }
             .associateBy { sigOf(it) }.toMutableMap()
