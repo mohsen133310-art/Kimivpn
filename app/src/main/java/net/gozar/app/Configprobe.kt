@@ -1,6 +1,5 @@
 package net.gozar.app
 
-import gozarcore.Gozarcore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -669,11 +668,7 @@ object ConfigProbe {
     }
 
     private suspend fun coreDelay(c: ProxyConfig, chain: ProxyConfig?): Long =
-        withContext(Dispatchers.IO) {
-            runCatching {
-                Gozarcore.measureDelay(ConfigBuilder.buildForTest(c, chain))
-            }.getOrDefault(-1L)
-        }
+        (Pinger.ping(c.address, c.port) as? PingResult.Ok)?.ms?.toLong() ?: -1L
 
     private suspend fun checkHost(target: String, kind: String): Boolean? {
         val session = withTimeoutOrNull(15000L) { CheckHost.start(target, kind, 14) } ?: return null
