@@ -15,7 +15,7 @@ This branch is the isolated migration branch. The app UI and Compose screens are
 - [x] Add the sing-box configuration builder for the supported proxy types.
 - [x] Add JitPack repository and libbox dependency.
 - [x] Add a GitHub Actions Android build and unit-test workflow.
-- [ ] Port the Android `PlatformInterface` implementation and TUN lifecycle to libbox.
+- [ ] Port the Android `PlatformInterface` implementation and TUN lifecycle to libbox (required before runtime switch).
 - [ ] Replace Xray start/stop/stats calls in `GozarVpnService`.
 - [ ] Map existing app settings (per-app routing, kill switch, DNS, split routing and traffic counters) to sing-box.
 - [ ] Remove `gozarcore.aar` after the sing-box service passes device tests.
