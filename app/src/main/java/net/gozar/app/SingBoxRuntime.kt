@@ -9,6 +9,7 @@ import io.nekohasekai.libbox.ConnectionOwner
 import io.nekohasekai.libbox.InterfaceUpdateListener
 import io.nekohasekai.libbox.LocalDNSTransport
 import io.nekohasekai.libbox.NetworkInterfaceIterator
+import io.nekohasekai.libbox.Notification
 import io.nekohasekai.libbox.OverrideOptions
 import io.nekohasekai.libbox.PlatformInterface
 import io.nekohasekai.libbox.PlatformUser
@@ -81,6 +82,7 @@ internal class SingBoxRuntime(private val vpn: GozarVpnService) {
     }
 
     private inner class AndroidPlatform : PlatformInterface {
+        override fun sendNotification(notification: Notification) {}
         override fun localDNSTransport(): LocalDNSTransport? = null
         override fun usePlatformAutoDetectInterfaceControl(): Boolean = true
         override fun autoDetectInterfaceControl(fd: Int) { vpn.protect(fd) }
