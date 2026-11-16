@@ -100,7 +100,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(files("libs/gozarcore.aar"))
+    // sing-box mobile core (libbox) — upstream Android AAR\n    implementation("com.github.singbox-android:libbox:1.14.4")\n\n    // Legacy Xray dependency remains temporarily until the VPN service adapter is switched.\n    implementation(files("libs/gozarcore.aar"))
     implementation("androidx.compose.material:material-icons-extended")
     implementation("dev.chrisbanes.haze:haze:1.6.0")
     implementation("com.google.zxing:core:3.5.3")
