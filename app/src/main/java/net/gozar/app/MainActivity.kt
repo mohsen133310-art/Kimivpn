@@ -321,7 +321,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
-import gozarcore.Gozarcore
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -747,11 +746,6 @@ class MainActivity : ComponentActivity() {
             }
         }
         lifecycleScope.launch(Dispatchers.Default) {
-            Gozarcore.setLogger(object : gozarcore.Logger {
-                override fun log(line: String?) {
-                    android.util.Log.i("XrayCore", line ?: "")
-                }
-            })
             withContext(Dispatchers.Main) { warm() }
         }
         startAutoSwitch()
@@ -2399,11 +2393,7 @@ private fun ConfigPickerScreen(
                                         pings[cfg.id] = if (cfg.protocol.trim().lowercase() == "ikev2") {
                                             Pinger.pingIke(cfg.address)
                                         } else {
-                                            val ms = withContext(Dispatchers.IO) {
-                                                Gozarcore.measureDelay(ConfigBuilder.buildForTest(cfg))
-                                            }
-                                            if (ms >= 0) PingResult.Ok(ms.toInt())
-                                            else PingResult.Failed
+                                            Pinger.ping(cfg.address, cfg.port)
                                         }
                                     }
                                 }
@@ -6945,11 +6935,7 @@ private fun AboutCard(
     }
 }
 
-private fun xrayCoreVersion(): String = runCatching {
-    Class.forName("gozarcore.Gozarcore")
-        .getMethod("xrayVersion")
-        .invoke(null) as String
-}.getOrNull()?.takeIf { it.isNotBlank() } ?: "—"
+private fun xrayCoreVersion(): String = "sing-box 1.14.4"
 
 private val PRIVACY_EN = """
 GRoute is built to protect your privacy.
