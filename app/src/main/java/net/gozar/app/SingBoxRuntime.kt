@@ -1,6 +1,9 @@
 package net.gozar.app
 
 import android.os.Build
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.system.OsConstants
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import io.nekohasekai.libbox.CommandServer
@@ -152,10 +155,56 @@ internal class SingBoxRuntime(private val vpn: GozarVpnService) {
 
         override fun startDefaultInterfaceMonitor(listener: InterfaceUpdateListener) {}
         override fun closeDefaultInterfaceMonitor(listener: InterfaceUpdateListener) {}
-        override fun getInterfaces(): NetworkInterfaceIterator = object : NetworkInterfaceIterator {
-            override fun hasNext(): Boolean = false
-            override fun next(): io.nekohasekai.libbox.NetworkInterface =
-                io.nekohasekai.libbox.NetworkInterface()
+        override fun getInterfaces(): NetworkInterfaceIterator {
+            val result = runCatching {
+                val connectivity = vpn.getSystemService(ConnectivityManager::class.java)
+                val systemInterfaces = SystemNetworkInterface.getNetworkInterfaces()?.toList().orEmpty()
+                connectivity.allNetworks.mapNotNull { network ->
+                    val properties = connectivity.getLinkProperties(network) ?: return@mapNotNull null
+                    val capabilities = connectivity.getNetworkCapabilities(network) ?: return@mapNotNull null
+                    val system = systemInterfaces.firstOrNull { it.name == properties.interfaceName }
+                        ?: return@mapNotNull null
+                    io.nekohasekai.libbox.NetworkInterface().apply {
+                        name = properties.interfaceName
+                        dnsServer = StringArray(properties.dnsServers.mapNotNull { it.hostAddress }.iterator())
+                        type = when {
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ->
+                                io.nekohasekai.libbox.Libbox.InterfaceTypeWIFI
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ->
+                                io.nekohasekai.libbox.Libbox.InterfaceTypeCellular
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ->
+                                io.nekohasekai.libbox.Libbox.InterfaceTypeEthernet
+                            else -> io.nekohasekai.libbox.Libbox.InterfaceTypeOther
+                        }
+                        index = system.index
+                        runCatching { mtu = system.mtu }
+                        addresses = StringArray(system.interfaceAddresses.map { address ->
+                            val host = if (address.address is Inet6Address) {
+                                address.address.hostAddress.substringBefore('%')
+                            } else address.address.hostAddress
+                            "$host/${address.networkPrefixLength}"
+                        }.iterator())
+                        var interfaceFlags = 0
+                        if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                            interfaceFlags = interfaceFlags or OsConstants.IFF_UP or OsConstants.IFF_RUNNING
+                        }
+                        if (system.isLoopback) interfaceFlags = interfaceFlags or OsConstants.IFF_LOOPBACK
+                        if (system.isPointToPoint) interfaceFlags = interfaceFlags or OsConstants.IFF_POINTOPOINT
+                        if (system.supportsMulticast()) interfaceFlags = interfaceFlags or OsConstants.IFF_MULTICAST
+                        flags = interfaceFlags
+                        metered = !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+                    }
+                }
+            }.getOrElse {
+                Log.w(TAG, "getInterfaces failed: ${it.message}")
+                emptyList()
+            }
+            return object : NetworkInterfaceIterator {
+                private val iterator = result.iterator()
+                override fun hasNext(): Boolean = iterator.hasNext()
+                override fun next(): io.nekohasekai.libbox.NetworkInterface =
+                    if (iterator.hasNext()) iterator.next() else io.nekohasekai.libbox.NetworkInterface()
+            }
         }
 
         override fun underNetworkExtension(): Boolean = false
@@ -179,6 +228,13 @@ internal class SingBoxRuntime(private val vpn: GozarVpnService) {
         override fun cancelNotification(identifier: String, typeID: Int) {}
         override fun createBridge(options: BridgeOptions): BridgeSession =
             throw UnsupportedOperationException("platform bridge is not supported")
+    }
+
+
+    private class StringArray(private val iterator: Iterator<String>) : StringIterator {
+        override fun hasNext(): Boolean = iterator.hasNext()
+        override fun next(): String = if (iterator.hasNext()) iterator.next() else ""
+        override fun len(): Int = 0
     }
 
     companion object { private const val TAG = "SingBoxRuntime" }
