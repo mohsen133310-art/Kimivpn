@@ -1,6 +1,5 @@
 package net.gozar.app
 
-import gozarcore.Gozarcore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -177,7 +176,7 @@ object FreeConfigs {
                     val ms = withContext(Dispatchers.IO) {
                         runCatching {
                             kotlinx.coroutines.withTimeoutOrNull(MEASURE_TIMEOUT_MS) {
-                                Gozarcore.measureDelay(ConfigBuilder.buildForTest(cfg))
+                                (Pinger.ping(cfg.address, cfg.port) as? PingResult.Ok)?.ms?.toLong() ?: -1L
                             } ?: -1L
                         }.getOrDefault(-1L)
                     }
