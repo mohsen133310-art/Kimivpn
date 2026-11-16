@@ -11,6 +11,26 @@ import org.json.JSONObject
  */
 object SingBoxConfigBuilder {
 
+
+    fun buildDirectOnly(): String {
+        val tun = JSONObject()
+            .put("type", "tun")
+            .put("tag", "tun-in")
+            .put("inet4_address", JSONArray().put("172.19.0.1/30"))
+            .put("mtu", 1500)
+            .put("auto_route", true)
+            .put("strict_route", true)
+            .put("stack", "mixed")
+        val direct = JSONObject().put("type", "direct").put("tag", "direct")
+        return JSONObject()
+            .put("log", JSONObject().put("level", "warn"))
+            .put("dns", JSONObject().put("servers", JSONArray().put(JSONObject().put("tag", "dns-direct").put("address", "local"))).put("final", "dns-direct"))
+            .put("inbounds", JSONArray().put(tun))
+            .put("outbounds", JSONArray().put(direct))
+            .put("route", JSONObject().put("auto_detect_interface", true).put("final", "direct"))
+            .toString()
+    }
+
     fun build(config: ProxyConfig): String {
         require(config.address.isNotBlank()) { "Server address is missing" }
         require(config.port in 1..65535) { "Server port is invalid" }
