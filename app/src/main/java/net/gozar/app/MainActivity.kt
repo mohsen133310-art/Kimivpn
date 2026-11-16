@@ -2727,13 +2727,7 @@ private fun ConfigPickerScreen(
                                                 pings[cfg.id] = if (cfg.protocol.trim().lowercase() == "ikev2") {
                                                     Pinger.pingIke(cfg.address)
                                                 } else {
-                                                    val ms = withContext(Dispatchers.IO) {
-                                                        Gozarcore.measureDelay(
-                                                            ConfigBuilder.buildForTest(cfg)
-                                                        )
-                                                    }
-                                                    if (ms >= 0) PingResult.Ok(ms.toInt())
-                                                    else PingResult.Failed
+                                                    Pinger.ping(cfg.address, cfg.port)
                                                 }
                                             }
                                         }
