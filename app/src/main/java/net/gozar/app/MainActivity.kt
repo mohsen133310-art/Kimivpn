@@ -1005,14 +1005,7 @@ class MainActivity : ComponentActivity() {
             return
         }
         if (IkeController.active) IkeController.disconnect(this)
-        val json = ConfigBuilder.build(config, store.fragment.value, store.splitRouting.value, store.sniffing.value, store.sniffTypes.value, mux = store.mux.value, muxConcurrency = store.muxConcurrency.value, adBlock = store.adBlock.value, fakeDns = store.fakeDns.value,
-            encryptedDns = store.encryptedDns.value,
-            torBase = if (config.protocol == "tor" && config.torBaseId.isNotEmpty())
-                store.configs.value.find { it.id == config.torBaseId } else null,
-            chainBase = if (config.chainId.isNotEmpty())
-                store.configs.value.find { it.id == config.chainId } else null,
-            onionRouting = store.onionRouting.value,
-            coreLogLevel = store.coreLogLevel.value)
+        val json = SingBoxConfigBuilder.build(config)
         VpnState.setConnecting(config.id)
         val aether = if (config.protocol == "aether") AetherController.spec(config) else ""
         val intent = VpnService.prepare(this)
@@ -1041,17 +1034,7 @@ class MainActivity : ComponentActivity() {
     private fun startBlockOnly() {
         if (!store.adBlock.value || !store.blockWhenOff.value) return
         if (VpnService.prepare(this) != null) return
-        val json = ConfigBuilder.build(
-            ProxyConfig(name = "adblock", protocol = "freedom", address = "127.0.0.1", port = 1),
-            splitRouting = store.splitRouting.value,
-            sniffing = store.sniffing.value,
-            sniffTypes = store.sniffTypes.value,
-            adBlock = true,
-            directOnly = true,
-            fakeDns = store.fakeDns.value,
-            encryptedDns = store.encryptedDns.value,
-            coreLogLevel = store.coreLogLevel.value
-        )
+        val json = SingBoxConfigBuilder.buildDirectOnly()
         startTunnel(json, Strings.get(store.lang.value, "adblock_notif"), "", null, ProxyConfig(name = "adblock", protocol = "freedom", address = "127.0.0.1", port = 1))
     }
 
