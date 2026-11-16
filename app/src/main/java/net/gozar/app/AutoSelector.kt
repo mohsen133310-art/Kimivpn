@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.VpnService
 import androidx.core.content.ContextCompat
-import gozarcore.Gozarcore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -68,11 +67,7 @@ class AutoSelector(
                     val r = if (cfg.protocol.trim().lowercase() == "ikev2") {
                         Pinger.pingIke(cfg.address)
                     } else {
-                        val ms = withContext(Dispatchers.IO) {
-                            runCatching { Gozarcore.measureDelay(ConfigBuilder.buildForTest(cfg)) }
-                                .getOrDefault(-1L)
-                        }
-                        if (ms >= 0) PingResult.Ok(ms.toInt()) else PingResult.Failed
+                        Pinger.ping(cfg.address, cfg.port)
                     }
                     _results.value = _results.value.toMutableMap().apply { put(cfg.id, r) }
                 }
