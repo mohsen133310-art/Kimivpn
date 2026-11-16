@@ -24,6 +24,8 @@ import io.nekohasekai.libbox.ShellSession
 import io.nekohasekai.libbox.NeighborUpdateListener
 import io.nekohasekai.libbox.BridgeOptions
 import io.nekohasekai.libbox.BridgeSession
+import java.net.Inet6Address
+import java.net.NetworkInterface as SystemNetworkInterface
 
 /**
  * Owns the sing-box CommandServer and bridges its TUN callback to Android VpnService.
