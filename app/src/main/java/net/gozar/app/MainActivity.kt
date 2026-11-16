@@ -1028,14 +1028,15 @@ class MainActivity : ComponentActivity() {
             store.onionRouting.value -> "|1"
             else -> null
         }
-        if (intent != null) { afterPermission = { startTunnel(json, config.name, aether, tor) }; vpnPermission.launch(intent) }
-        else startTunnel(json, config.name, aether, tor)
+        if (intent != null) { afterPermission = { startTunnel(json, config.name, aether, tor, config) }; vpnPermission.launch(intent) }
+        else startTunnel(json, config.name, aether, tor, config)
     }
 
-    private fun startTunnel(configJson: String, name: String, aether: String, tor: String?) {
+    private fun startTunnel(configJson: String, name: String, aether: String, tor: String?, proxyConfig: ProxyConfig) {
         startService(
             Intent(this, GozarVpnService::class.java)
                 .putExtra(GozarVpnService.EXTRA_CONFIG, configJson)
+                .putExtra(GozarVpnService.EXTRA_PROXY_CONFIG, proxyConfig.toJson().toString())
                 .putExtra(GozarVpnService.EXTRA_NAME, name)
                 .putExtra(GozarVpnService.EXTRA_AETHER, aether)
                 .putExtra(GozarVpnService.EXTRA_TOR, tor)
@@ -1057,7 +1058,7 @@ class MainActivity : ComponentActivity() {
             encryptedDns = store.encryptedDns.value,
             coreLogLevel = store.coreLogLevel.value
         )
-        startTunnel(json, Strings.get(store.lang.value, "adblock_notif"), "", null)
+        startTunnel(json, Strings.get(store.lang.value, "adblock_notif"), "", null, ProxyConfig(name = "adblock", protocol = "freedom", address = "127.0.0.1", port = 1))
     }
 
     private fun disconnect() {
