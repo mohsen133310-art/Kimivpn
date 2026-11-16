@@ -1,6 +1,5 @@
 package net.gozar.app
 
-import android.net.IpPrefix
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
@@ -8,7 +7,6 @@ import io.nekohasekai.libbox.CommandServer
 import io.nekohasekai.libbox.CommandServerHandler
 import io.nekohasekai.libbox.ConnectionOwner
 import io.nekohasekai.libbox.InterfaceUpdateListener
-import io.nekohasekai.libbox.Libbox
 import io.nekohasekai.libbox.LocalDNSTransport
 import io.nekohasekai.libbox.NetworkInterfaceIterator
 import io.nekohasekai.libbox.OverrideOptions
@@ -22,7 +20,6 @@ import io.nekohasekai.libbox.ShellSession
 import io.nekohasekai.libbox.NeighborUpdateListener
 import io.nekohasekai.libbox.BridgeOptions
 import io.nekohasekai.libbox.BridgeSession
-import java.net.InetAddress
 
 /**
  * Owns the sing-box CommandServer and bridges its TUN callback to Android VpnService.
@@ -113,13 +110,15 @@ internal class SingBoxRuntime(private val vpn: GozarVpnService) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     val routes4 = options.inet4RouteAddress
-                    while (routes4.hasNext()) builder.addRoute(IpPrefix(routes4.next().toIpPrefix()))
+                    while (routes4.hasNext()) {
+                        val route = routes4.next()
+                        builder.addRoute(route.address(), route.prefix())
+                    }
                     val routes6 = options.inet6RouteAddress
-                    while (routes6.hasNext()) builder.addRoute(IpPrefix(routes6.next().toIpPrefix()))
-                    val excluded4 = options.inet4RouteExcludeAddress
-                    while (excluded4.hasNext()) builder.excludeRoute(IpPrefix(excluded4.next().toIpPrefix()))
-                    val excluded6 = options.inet6RouteExcludeAddress
-                    while (excluded6.hasNext()) builder.excludeRoute(IpPrefix(excluded6.next().toIpPrefix()))
+                    while (routes6.hasNext()) {
+                        val route = routes6.next()
+                        builder.addRoute(route.address(), route.prefix())
+                    }
                 } else {
                     val routes4 = options.inet4RouteRange
                     while (routes4.hasNext()) {
@@ -179,12 +178,6 @@ internal class SingBoxRuntime(private val vpn: GozarVpnService) {
         override fun createBridge(options: BridgeOptions): BridgeSession =
             throw UnsupportedOperationException("platform bridge is not supported")
     }
-
-    private fun io.nekohasekai.libbox.Inet4Address.toIpPrefix(): String =
-        "${address()}/${prefix()}"
-
-    private fun io.nekohasekai.libbox.Inet6Address.toIpPrefix(): String =
-        "${address()}/${prefix()}"
 
     companion object { private const val TAG = "SingBoxRuntime" }
 }
