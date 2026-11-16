@@ -42,3 +42,7 @@
 -dontwarn org.slf4j.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.apache.**
+# sing-box libbox JNI bridge (required when minifying release builds)
+-keep class io.nekohasekai.libbox.** { *; }
+-keep interface io.nekohasekai.libbox.** { *; }
+-dontwarn io.nekohasekai.libbox.**
