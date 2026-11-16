@@ -1,24 +1,35 @@
 # KimiVPN — sing-box migration
 
-This branch is the isolated migration branch. The app UI and Compose screens are intentionally left unchanged.
+The migration is being performed on the `migration/sing-box-core` branch. The Compose UI has been kept unchanged.
 
-## Target engine
+## Engine
 
 - sing-box Android library: `com.github.singbox-android:libbox:1.14.4`
-- Supported proxy protocols in the first migration scope: VLESS, VMess, Trojan
-- Security: TLS and REALITY
-- Transports retained: TCP, WebSocket, gRPC, HTTP/2 and HTTPUpgrade
+- First supported proxy protocols: VLESS, VMess and Trojan
+- TLS and REALITY security
+- TCP, WebSocket, gRPC, HTTP/2 and HTTPUpgrade transports
 - XHTTP and mKCP are intentionally excluded.
 
-## Current state
+## Implemented
 
-- [x] Add the sing-box configuration builder for the supported proxy types.
-- [x] Add JitPack repository and libbox dependency.
-- [x] Add a GitHub Actions Android build and unit-test workflow.
-- [ ] Port the Android `PlatformInterface` implementation and TUN lifecycle to libbox (required before runtime switch).
-- [ ] Replace Xray start/stop/stats calls in `GozarVpnService`.
-- [ ] Map existing app settings (per-app routing, kill switch, DNS, split routing and traffic counters) to sing-box.
-- [ ] Remove `gozarcore.aar` after the sing-box service passes device tests.
-- [ ] Produce and verify arm64-v8a and armeabi-v7a release APKs.
+- [x] sing-box configuration builder for VLESS, VMess, Trojan and REALITY.
+- [x] Initialize `Libbox.setup` from the Android Application.
+- [x] Add a `CommandServer` runtime adapter and Android `PlatformInterface`.
+- [x] Establish the Android VPN TUN from sing-box `TunOptions`.
+- [x] Route the main connect flow, auto-selector reconnect and Quick Settings tile through sing-box.
+- [x] Replace the active VPN service's Xray start/stop path with sing-box.
+- [x] Remove the legacy `gozarcore.aar` dependency and binary.
+- [x] Remove remaining compile-time references to the Xray Java binding.
+- [x] Build and unit-test a debug APK successfully on CI (workflow run 22).
 
-**Important:** The Xray runtime is intentionally still present while the service adapter is being ported. This avoids shipping a build that appears connected but does not carry traffic. The builder and dependency alone do not switch the running VPN engine.
+## Remaining work / limitations
+
+- [ ] Verify the newest commits with a clean CI build and artifact.
+- [ ] Test real VLESS, VMess, Trojan and REALITY connections on Android devices.
+- [ ] Restore traffic counters and speed telemetry using sing-box statistics.
+- [ ] Map the previous per-app, split-routing, sniffing, fake-DNS and encrypted-DNS settings into sing-box configuration.
+- [ ] Reconnect the stability test to sing-box statistics.
+- [ ] Complete graceful handling for network changes and service reload callbacks.
+- [ ] Produce and verify release APKs for arm64-v8a and armeabi-v7a.
+
+The successful CI build proves compilation and unit tests only; it does not replace device-level connectivity testing. Some features previously supplied by Xray are intentionally not represented as complete until they are mapped to sing-box.
