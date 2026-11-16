@@ -163,11 +163,12 @@ internal class SingBoxRuntime(private val vpn: GozarVpnService) {
                 val systemInterfaces = SystemNetworkInterface.getNetworkInterfaces()?.toList().orEmpty()
                 connectivity.allNetworks.mapNotNull { network ->
                     val properties = connectivity.getLinkProperties(network) ?: return@mapNotNull null
+                    val interfaceName = properties.interfaceName ?: return@mapNotNull null
                     val capabilities = connectivity.getNetworkCapabilities(network) ?: return@mapNotNull null
-                    val system = systemInterfaces.firstOrNull { it.name == properties.interfaceName }
+                    val system = systemInterfaces.firstOrNull { it.name == interfaceName }
                         ?: return@mapNotNull null
                     io.nekohasekai.libbox.NetworkInterface().apply {
-                        name = properties.interfaceName
+                        name = interfaceName
                         dnsServer = StringArray(properties.dnsServers.mapNotNull { it.hostAddress }.iterator())
                         type = when {
                             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ->
