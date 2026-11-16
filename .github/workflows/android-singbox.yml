@@ -32,10 +32,10 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Assemble debug APK
-        run: ./gradlew --no-daemon :app:assembleDebug
+        run: env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u http_proxy -u https_proxy -u all_proxy ./gradlew --no-daemon :app:assembleDebug
 
       - name: Run unit tests
-        run: ./gradlew --no-daemon :app:testDebugUnitTest
+        run: env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u http_proxy -u https_proxy -u all_proxy ./gradlew --no-daemon :app:testDebugUnitTest
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
