@@ -2,6 +2,9 @@ package net.gozar.app
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Build
+import io.nekohasekai.libbox.Libbox
+import io.nekohasekai.libbox.SetupOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -16,6 +19,19 @@ class GozarApplication : org.strongswan.android.logic.StrongSwanApplication() {
 
     override fun onCreate() {
         super.onCreate()
+
+        val baseDir = filesDir.also { it.mkdirs() }
+        val tempDir = cacheDir.also { it.mkdirs() }
+        Libbox.setup(SetupOptions().apply {
+            basePath = baseDir.absolutePath
+            workingPath = baseDir.absolutePath
+            tempPath = tempDir.absolutePath
+            fixAndroidStack = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+            logMaxLines = 3000
+            debug = BuildConfig.DEBUG
+            oomKillerEnabled = true
+            oomMemoryLimit = 0
+        })
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityStarted(activity: Activity) {
