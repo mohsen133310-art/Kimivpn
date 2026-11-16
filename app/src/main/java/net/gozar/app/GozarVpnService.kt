@@ -9,7 +9,6 @@ import android.net.VpnService
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import gozarcore.Gozarcore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,11 +16,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.io.File
 
 class GozarVpnService : VpnService() {
 
     private var tunFd: ParcelFileDescriptor? = null
+    private var singBoxRuntime: SingBoxRuntime? = null
+    private var proxyConfig: ProxyConfig? = null
     private var aetherSpec: AetherSpec? = null
     private var torSpec: String? = null
     private var blockFd: ParcelFileDescriptor? = null
@@ -35,12 +35,7 @@ class GozarVpnService : VpnService() {
 
     override fun onCreate() {
         super.onCreate()
-        Gozarcore.setLogger(object : gozarcore.Logger {
-            override fun log(line: String?) {
-                Log.i("XrayCore", line ?: "")
-            }
-        })
-        TorLog.sink = { line -> Log.i("XrayCore", line) }
+        TorLog.sink = { line -> Log.i("KimiVPN", line) }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,7 +58,10 @@ class GozarVpnService : VpnService() {
                 torSpec = intent?.getStringExtra(EXTRA_TOR)
                 configName = intent?.getStringExtra(EXTRA_NAME) ?: "VPN"
                 stopLabel = intent?.getStringExtra(EXTRA_STOP_LABEL) ?: "Disconnect"
-                if (configJson.isNullOrEmpty()) {
+                proxyConfig = intent?.getStringExtra(EXTRA_PROXY_CONFIG)?.let {
+                    runCatching { ProxyConfig.fromJson(org.json.JSONObject(it)) }.getOrNull()
+                }
+                if (configJson.isNullOrEmpty() || proxyConfig == null) {
                     die("No config provided")
                     return START_NOT_STICKY
                 }
@@ -74,75 +72,48 @@ class GozarVpnService : VpnService() {
     }
 
     private fun startTunnel(configJson: String) {
-        if (tunFd != null) return
+        if (singBoxRuntime != null) return
         tearingDown = false
         startForeground(NOTIF_ID, buildNotification())
 
         scope.launch {
-            val builder = Builder()
-                .setSession("GozarNet")
-                .setMtu(1500)
-                .addAddress("10.10.0.2", 32)
-                .addDnsServer("1.1.1.1")
-                .addRoute("0.0.0.0", 0)
-
-            applyPerApp(builder)
-
-            val pfd = builder.establish()
-            if (pfd == null) {
-                die("VPN permission not granted")
-                return@launch
-            }
-            tunFd = pfd
-
             try {
-                setupGeoAssets()
-                val spec = aetherSpec
-                if (spec != null) {
-                    if (!AetherController.available(applicationContext)) {
-                        die("Aether engine is not bundled in this build")
-                        return@launch
-                    }
-                    val up = withContext(Dispatchers.IO) {
-                        AetherController.start(applicationContext, spec)
-                    }
-                    if (!up) {
-                        AetherController.stop()
-                        TorController.stop()
-                        die("Aether failed to start")
-                        return@launch
-                    }
+                val config = proxyConfig ?: error("Missing proxy profile")
+                if (config.protocol.lowercase() !in setOf("vless", "vmess", "trojan", "freedom")) {
+                    error("sing-box migration currently supports VLESS, VMess and Trojan profiles")
                 }
-                runCatching { Gozarcore.stop() }
-                Gozarcore.start(configJson, pfd.detachFd().toLong())
-                Log.i(TAG, "Xray core started, tunnel up")
-                val tor = torSpec
-                if (tor != null) {
-                    if (!TorController.available(applicationContext)) {
-                        die("Tor engine is not bundled in this build")
-                        return@launch
-                    }
-                    val parts = tor.split("|")
-                    val up = withContext(Dispatchers.IO) {
-                        TorController.start(
-                            applicationContext,
-                            parts.getOrElse(0) { "" },
-                            parts.getOrElse(1) { "0" } == "1"
-                        )
-                    }
-                    if (!up) {
-                        TorController.stop()
-                        die("Tor failed to start")
-                        return@launch
-                    }
+                if (aetherSpec != null || torSpec != null) {
+                    error("Aether and Tor routing are not yet migrated to sing-box")
                 }
+                val runtime = SingBoxRuntime(this@GozarVpnService)
+                singBoxRuntime = runtime
+                runtime.start(
+                    if (config.protocol.equals("freedom", true)) {
+                        SingBoxConfigBuilder.buildDirectOnly()
+                    } else {
+                        SingBoxConfigBuilder.build(config)
+                    }
+                )
+                Log.i(TAG, "sing-box core started, tunnel up")
                 VpnBridge.sendConnected(applicationContext)
-                startPolling()
-            } catch (e: Exception) {
-                Log.e(TAG, "Xray core failed to start", e)
-                die(e.message ?: "Engine failed to start")
+            } catch (e: Throwable) {
+                Log.e(TAG, "sing-box core failed to start", e)
+                runCatching { singBoxRuntime?.stop() }
+                singBoxRuntime = null
+                runCatching { tunFd?.close() }
+                tunFd = null
+                die(e.message ?: "sing-box engine failed to start")
             }
         }
+    }
+
+    internal fun onSingBoxTunEstablished(descriptor: ParcelFileDescriptor) {
+        runCatching { tunFd?.close() }
+        tunFd = descriptor
+    }
+
+    internal fun stopFromSingBox() {
+        if (!tearingDown) die(null)
     }
 
     private fun startAutoSelect() {
@@ -167,17 +138,11 @@ class GozarVpnService : VpnService() {
     private fun switchTunnel(config: ProxyConfig) {
         if (tearingDown) return
         val store = ConfigStore.get(applicationContext)
-        val json = ConfigBuilder.build(
-            config, store.fragment.value, store.splitRouting.value,
-            store.sniffing.value, store.sniffTypes.value,
-            adBlock = store.adBlock.value,
-            fakeDns = store.fakeDns.value,
-            encryptedDns = store.encryptedDns.value,
-            onionRouting = store.onionRouting.value
-        )
+        val json = SingBoxConfigBuilder.build(config)
+        proxyConfig = config
         Log.d(TAG, "switching tunnel to ${config.name}")
         pollJob?.cancel(); pollJob = null
-        runCatching { Gozarcore.stop() }
+        runCatching { singBoxRuntime?.stop() }; singBoxRuntime = null
         AetherController.stop()
         TorController.stop()
         runCatching { tunFd?.close() }; tunFd = null
@@ -187,21 +152,6 @@ class GozarVpnService : VpnService() {
         configName = config.name
         VpnState.setConnecting(config.id)
         startTunnel(json)
-    }
-
-    private fun setupGeoAssets() {
-        val dir = filesDir
-        runCatching {
-            listOf("geoip.dat", "geosite.dat").forEach { name ->
-                val out = File(dir, name)
-                if (!out.exists() || out.length() == 0L) {
-                    assets.open(name).use { input ->
-                        out.outputStream().use { output -> input.copyTo(output) }
-                    }
-                }
-            }
-        }.onFailure { Log.w(TAG, "geo assets not bundled: ${it.message}") }
-        Gozarcore.setAssetPath(dir.absolutePath)
     }
 
     private fun applyPerApp(builder: Builder) {
@@ -230,30 +180,6 @@ class GozarVpnService : VpnService() {
         }
     }
 
-    private fun startPolling() {
-        pollJob?.cancel()
-        pollJob = scope.launch {
-            var lastUp = 0L
-            var lastDown = 0L
-            while (isActive && !tearingDown) {
-                val up = Gozarcore.queryUplink()
-                val down = Gozarcore.queryDownlink()
-                val upSpeed = (up - lastUp).coerceAtLeast(0L)
-                val downSpeed = (down - lastDown).coerceAtLeast(0L)
-                lastUp = up; lastDown = down
-
-                VpnBridge.sendCounters(applicationContext, up, down, upSpeed, downSpeed)
-
-                if (!tearingDown) {
-                    getSystemService(NotificationManager::class.java)
-                        ?.notify(NOTIF_ID, buildNotification(downSpeed, upSpeed))
-                }
-
-                delay(1000)
-            }
-        }
-    }
-
     private fun die(error: String?) {
         if (tearingDown) return
         val killOn = runCatching { ConfigStore.get(applicationContext).killSwitch.value }.getOrDefault(false)
@@ -267,7 +193,8 @@ class GozarVpnService : VpnService() {
         stopAutoSelect()
         pollJob?.cancel()
         pollJob = null
-        runCatching { Gozarcore.stop() }
+        runCatching { singBoxRuntime?.stop() }; singBoxRuntime = null
+        runCatching { tunFd?.close() }; tunFd = null
         AetherController.stop()
         TorController.stop()
         if (error != null) VpnBridge.sendError(applicationContext, error)
@@ -283,7 +210,7 @@ class GozarVpnService : VpnService() {
 
     private fun enterKillSwitch(reason: String) {
         pollJob?.cancel(); pollJob = null
-        runCatching { Gozarcore.stop() }
+        runCatching { singBoxRuntime?.stop() }; singBoxRuntime = null
         runCatching { tunFd?.close() }; tunFd = null
         val b = Builder()
             .setSession("GozarNet (blocked)")
@@ -304,6 +231,8 @@ class GozarVpnService : VpnService() {
         stopAutoSelect()
         AetherController.stop()
         TorController.stop()
+        runCatching { singBoxRuntime?.stop() }; singBoxRuntime = null
+        runCatching { tunFd?.close() }; tunFd = null
         runCatching { blockFd?.close() }; blockFd = null
         runCatching { getSystemService(NotificationManager::class.java)?.cancel(NOTIF_ID) }
         super.onDestroy()
@@ -384,6 +313,7 @@ class GozarVpnService : VpnService() {
         const val ACTION_STOP = "net.gozar.app.STOP"
         const val ACTION_WARM = "net.gozar.app.WARM"
         const val EXTRA_CONFIG = "net.gozar.app.CONFIG"
+        const val EXTRA_PROXY_CONFIG = "net.gozar.app.PROXY_CONFIG"
         const val EXTRA_AETHER = "net.gozar.app.AETHER"
         const val EXTRA_TOR = "net.gozar.app.TOR"
         const val EXTRA_NAME = "net.gozar.app.NAME"
