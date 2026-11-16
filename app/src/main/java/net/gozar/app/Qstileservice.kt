@@ -76,18 +76,11 @@ class QsTileService : TileService() {
         val config = store.configs.value.firstOrNull { it.id == selectedId }
         if (config == null) { openApp(); return }
         if (VpnService.prepare(this) != null) { openApp(); return }
-        val json = ConfigBuilder.build(
-            config, store.fragment.value, store.splitRouting.value,
-            store.sniffing.value, store.sniffTypes.value,
-            adBlock = store.adBlock.value,
-            fakeDns = store.fakeDns.value,
-            encryptedDns = store.encryptedDns.value,
-            onionRouting = store.onionRouting.value,
-            coreLogLevel = store.coreLogLevel.value
-        )
+        val json = SingBoxConfigBuilder.build(config)
         VpnState.setConnecting(config.id)
         val intent = Intent(this, GozarVpnService::class.java)
             .putExtra(GozarVpnService.EXTRA_CONFIG, json)
+            .putExtra(GozarVpnService.EXTRA_PROXY_CONFIG, config.toJson().toString())
             .putExtra(GozarVpnService.EXTRA_AETHER, AetherSpec.from(config)?.toJson())
             .putExtra(
                 GozarVpnService.EXTRA_TOR,
