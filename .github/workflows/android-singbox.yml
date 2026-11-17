@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: pix-android-{{ github.ref }
+  group: pix-android-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
