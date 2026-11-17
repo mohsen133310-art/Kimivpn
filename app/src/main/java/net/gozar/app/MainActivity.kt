@@ -6711,7 +6711,7 @@ private fun AboutScreen(modifier: Modifier = Modifier) {
             PulseHalo(color = primary, size = 154.dp)
             Box(
                 Modifier.size(92.dp).clip(RoundedCornerShape(30.dp))
-                    .background(Brush.linearGradient(listOf(Color(0xFF9878FF), Color(0xFF5D3BE0))),
+                    .background(Brush.linearGradient(listOf(Color(0xFF9878FF), Color(0xFF5D3BE0)))),
                     contentAlignment = Alignment.Center
             ) {
                 Icon(Icons.Filled.Bolt, contentDescription = null, tint = Color.White, modifier = Modifier.size(52.dp))
