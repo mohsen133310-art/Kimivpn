@@ -23,6 +23,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Pix"
+rootProject.name = "PIX"
 include(":app")
 include(":strongswan")
