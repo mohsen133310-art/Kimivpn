@@ -23,6 +23,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KimiVPN"
+rootProject.name = "Pix"
 include(":app")
 include(":strongswan")
