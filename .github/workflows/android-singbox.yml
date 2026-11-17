@@ -1,4 +1,4 @@
-name: Android build (sing-box migration)
+name: Pix Android build
 
 on:
   push:
@@ -8,6 +8,10 @@ on:
     branches:
       - migration/sing-box-core
   workflow_dispatch:
+
+concurrency:
+  group: pix-android-{{ github.ref }
+  cancel-in-progress: true
 
 permissions:
   contents: read
