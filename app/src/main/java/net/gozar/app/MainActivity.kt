@@ -342,30 +342,30 @@ import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.math.roundToInt
 
-private val BrandBlue = Color(0xFF6D4AE8)
-private val SplashBackground = Color(0xFFF6F2FF)
+private val BrandBlue = Color(0xFF6755F5)
+private val SplashBackground = Color(0xFFF3F5FF)
 
 private val GnetLightColors = lightColorScheme(
-    primary = Color(0xFF6D4AE8),
+    primary = Color(0xFF6755F5),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFE9E2FF),
-    onPrimaryContainer = Color(0xFF26164F),
+    primaryContainer = Color(0xFFE5E8FF),
+    onPrimaryContainer = Color(0xFF211B59),
     inversePrimary = Color(0xFFD2B8FF),
-    secondary = Color(0xFF685A88),
+    secondary = Color(0xFF52617D),
     onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFEDE7FA),
+    secondaryContainer = Color(0xFFE3EAF8),
     onSecondaryContainer = Color(0xFF2C2440),
-    tertiary = Color(0xFF9270D9),
+    tertiary = Color(0xFF11A6A0),
     onTertiary = Color(0xFFFFFFFF),
     tertiaryContainer = Color(0xFFF0E9FF),
     onTertiaryContainer = Color(0xFF38235B),
-    background = Color(0xFFF7F5FF),
+    background = Color(0xFFF3F5FC),
     onBackground = Color(0xFF131720),
     surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF131720),
-    surfaceVariant = Color(0xFFEFEAF8),
+    surfaceVariant = Color(0xFFE9ECF7),
     onSurfaceVariant = Color(0xFF655D78),
-    surfaceTint = Color(0xFF6D4AE8),
+    surfaceTint = Color(0xFF6755F5),
     surfaceBright = Color(0xFFFFFFFF),
     surfaceDim = Color(0xFFE7E1F2),
     surfaceContainerLowest = Color(0xFFFFFFFF),
@@ -379,8 +379,8 @@ private val GnetLightColors = lightColorScheme(
     onError = Color(0xFFFFFFFF),
     errorContainer = Color(0xFFFFDAD6),
     onErrorContainer = Color(0xFF410002),
-    outline = Color(0xFFD1C8E4),
-    outlineVariant = Color(0xFFE6DFF1),
+    outline = Color(0xFFC9D0E6),
+    outlineVariant = Color(0xFFE1E6F3),
     scrim = Color(0xFF000000)
 )
 
@@ -406,7 +406,7 @@ private val GnetDarkColors = darkColorScheme(
     surfaceContainer = Color(0xFF1A1827),
     surfaceContainerHigh = Color(0xFF211C30),
     surfaceContainerHighest = Color(0xFF29253A),
-    tertiary = Color(0xFFE0B8FF),
+    tertiary = Color(0xFF5CE1D6),
     onTertiary = Color(0xFF042430),
     tertiaryContainer = Color(0xFF432956),
     onTertiaryContainer = Color(0xFFF4E2FF),
@@ -1356,13 +1356,13 @@ private fun GozarApp(
                         ) {
                             Box(
                                 Modifier.size(29.dp).clip(RoundedCornerShape(10.dp))
-                                    .background(Brush.linearGradient(listOf(Color(0xFF8C6BFF), Color(0xFF5D3BE0)))),
+                                    .background(Brush.linearGradient(listOf(Color(0xFF8B7CFF), Color(0xFF5140D9)))),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(Icons.Filled.Bolt, contentDescription = null, tint = Color.White, modifier = Modifier.size(19.dp))
                             }
                             Text(
-                                "pix",
+                                "PIX",
                                 color = MaterialTheme.colorScheme.primary,
                                 fontFamily = AntaFont,
                                 fontSize = 29.sp,
@@ -1790,7 +1790,7 @@ private fun ConnectionScreen(
                     Column(Modifier.fillMaxWidth()) {
                         Row(
                             Modifier.fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.09f))
+                                .background(Brush.horizontalGradient(listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.16f), Color(0xFF18B7B0).copy(alpha = 0.08f))))
                                 .padding(horizontal = 16.dp, vertical = 10.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
