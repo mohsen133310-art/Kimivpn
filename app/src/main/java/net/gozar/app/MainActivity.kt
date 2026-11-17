@@ -342,36 +342,36 @@ import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.math.roundToInt
 
-private val BrandBlue = Color(0xFF7542C8)
-private val SplashBackground = Color(0xFFF7F3FC)
+private val BrandBlue = Color(0xFF6D4AE8)
+private val SplashBackground = Color(0xFFF6F2FF)
 
 private val GnetLightColors = lightColorScheme(
-    primary = Color(0xFF7542C8),
+    primary = Color(0xFF6D4AE8),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFEBDDFF),
-    onPrimaryContainer = Color(0xFF281044),
+    primaryContainer = Color(0xFFE9E2FF),
+    onPrimaryContainer = Color(0xFF26164F),
     inversePrimary = Color(0xFFD2B8FF),
-    secondary = Color(0xFF67527D),
+    secondary = Color(0xFF685A88),
     onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFE9DDF5),
-    onSecondaryContainer = Color(0xFF251B30),
-    tertiary = Color(0xFF9462B8),
+    secondaryContainer = Color(0xFFEDE7FA),
+    onSecondaryContainer = Color(0xFF2C2440),
+    tertiary = Color(0xFF9270D9),
     onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFFF0DFFF),
-    onTertiaryContainer = Color(0xFF32164B),
-    background = Color(0xFFF8F5FC),
+    tertiaryContainer = Color(0xFFF0E9FF),
+    onTertiaryContainer = Color(0xFF38235B),
+    background = Color(0xFFF7F5FF),
     onBackground = Color(0xFF131720),
     surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF131720),
-    surfaceVariant = Color(0xFFEDE6F5),
-    onSurfaceVariant = Color(0xFF655A70),
-    surfaceTint = Color(0xFF7542C8),
+    surfaceVariant = Color(0xFFEFEAF8),
+    onSurfaceVariant = Color(0xFF655D78),
+    surfaceTint = Color(0xFF6D4AE8),
     surfaceBright = Color(0xFFFFFFFF),
-    surfaceDim = Color(0xFFE3DAEC),
+    surfaceDim = Color(0xFFE7E1F2),
     surfaceContainerLowest = Color(0xFFFFFFFF),
     surfaceContainerLow = Color(0xFFFFFFFF),
-    surfaceContainer = Color(0xFFFDFEFF),
-    surfaceContainerHigh = Color(0xFFF7FAFE),
+    surfaceContainer = Color(0xFFFFFEFF),
+    surfaceContainerHigh = Color(0xFFF9F7FF),
     surfaceContainerHighest = Color(0xFFFFFFFF),
     inverseSurface = Color(0xFF272E3C),
     inverseOnSurface = Color(0xFFEBF0F8),
@@ -379,93 +379,93 @@ private val GnetLightColors = lightColorScheme(
     onError = Color(0xFFFFFFFF),
     errorContainer = Color(0xFFFFDAD6),
     onErrorContainer = Color(0xFF410002),
-    outline = Color(0xFFC9BBD8),
-    outlineVariant = Color(0xFFE4D9EF),
+    outline = Color(0xFFD1C8E4),
+    outlineVariant = Color(0xFFE6DFF1),
     scrim = Color(0xFF000000)
 )
 
 private val GnetDarkColors = darkColorScheme(
-    primary = Color(0xFFC6A5FF),
+    primary = Color(0xFFC8B6FF),
     onPrimary = Color(0xFF071226),
-    primaryContainer = Color(0xFF493263),
+    primaryContainer = Color(0xFF3D315E),
     onPrimaryContainer = Color(0xFFF0E5FF),
-    secondary = Color(0xFFD0B9E8),
+    secondary = Color(0xFFD8C9FF),
     onSecondary = Color(0xFF0E1626),
-    secondaryContainer = Color(0xFF342641),
+    secondaryContainer = Color(0xFF332947),
     onSecondaryContainer = Color(0xFFEFE2FA),
-    background = Color(0xFF0E1422),
+    background = Color(0xFF11101B),
     onBackground = Color(0xFFE6EAF2),
-    surface = Color(0xFF161D2E),
+    surface = Color(0xFF1A1827),
     onSurface = Color(0xFFE6EAF2),
-    surfaceVariant = Color(0xFF232C40),
+    surfaceVariant = Color(0xFF29253A),
     onSurfaceVariant = Color(0xFFA2B0C8),
-    surfaceBright = Color(0xFF2A3348),
-    surfaceDim = Color(0xFF0B101B),
-    surfaceContainerLowest = Color(0xFF0A0F1A),
-    surfaceContainerLow = Color(0xFF131A29),
-    surfaceContainer = Color(0xFF161D2E),
-    surfaceContainerHigh = Color(0xFF1D2537),
-    surfaceContainerHighest = Color(0xFF232C40),
+    surfaceBright = Color(0xFF342E49),
+    surfaceDim = Color(0xFF0D0B15),
+    surfaceContainerLowest = Color(0xFF0A0911),
+    surfaceContainerLow = Color(0xFF14111F),
+    surfaceContainer = Color(0xFF1A1827),
+    surfaceContainerHigh = Color(0xFF211C30),
+    surfaceContainerHighest = Color(0xFF29253A),
     tertiary = Color(0xFFE0B8FF),
     onTertiary = Color(0xFF042430),
     tertiaryContainer = Color(0xFF432956),
     onTertiaryContainer = Color(0xFFF4E2FF),
-    inversePrimary = Color(0xFF7542C8),
-    surfaceTint = Color(0xFFC6A5FF),
+    inversePrimary = Color(0xFF6D4AE8),
+    surfaceTint = Color(0xFFC8B6FF),
     inverseSurface = Color(0xFFE6EAF2),
-    inverseOnSurface = Color(0xFF161D2E),
+    inverseOnSurface = Color(0xFF1A1827),
     error = Color(0xFFFF7A7A),
     onError = Color(0xFF2A0A0A),
     errorContainer = Color(0xFF5A1A1A),
     onErrorContainer = Color(0xFFFFDAD6),
-    outline = Color(0xFF594A68),
-    outlineVariant = Color(0xFF42364F),
+    outline = Color(0xFF5C4D75),
+    outlineVariant = Color(0xFF40364F),
     scrim = Color(0xFF000000)
 )
 
 private val GnetAmoledColors = darkColorScheme(
-    primary = Color(0xFFC6A5FF),
+    primary = Color(0xFFC8B6FF),
     onPrimary = Color(0xFF071226),
-    primaryContainer = Color(0xFF1B2944),
+    primaryContainer = Color(0xFF211A35),
     onPrimaryContainer = Color(0xFFF0E5FF),
-    secondary = Color(0xFFD0B9E8),
+    secondary = Color(0xFFD8C9FF),
     onSecondary = Color(0xFF0E1626),
-    secondaryContainer = Color(0xFF11161F),
+    secondaryContainer = Color(0xFF11101A),
     onSecondaryContainer = Color(0xFFEFE2FA),
     background = Color(0xFF000000),
     onBackground = Color(0xFFE6EAF2),
     surface = Color(0xFF000000),
     onSurface = Color(0xFFE6EAF2),
-    surfaceVariant = Color(0xFF12161F),
+    surfaceVariant = Color(0xFF171421),
     onSurfaceVariant = Color(0xFFA2B0C8),
     surfaceBright = Color(0xFF1A1F2A),
     surfaceDim = Color(0xFF000000),
     surfaceContainerLowest = Color(0xFF000000),
-    surfaceContainerLow = Color(0xFF07090D),
-    surfaceContainer = Color(0xFF0B0E14),
-    surfaceContainerHigh = Color(0xFF0F131B),
-    surfaceContainerHighest = Color(0xFF12161F),
+    surfaceContainerLow = Color(0xFF08070D),
+    surfaceContainer = Color(0xFF0B0912),
+    surfaceContainerHigh = Color(0xFF100D18),
+    surfaceContainerHighest = Color(0xFF171421),
     tertiary = Color(0xFFE0B8FF),
     onTertiary = Color(0xFF042430),
     tertiaryContainer = Color(0xFF0A2733),
     onTertiaryContainer = Color(0xFFF4E2FF),
-    inversePrimary = Color(0xFF7542C8),
-    surfaceTint = Color(0xFFC6A5FF),
+    inversePrimary = Color(0xFF6D4AE8),
+    surfaceTint = Color(0xFFC8B6FF),
     inverseSurface = Color(0xFFE6EAF2),
-    inverseOnSurface = Color(0xFF0B0E14),
+    inverseOnSurface = Color(0xFF0B0912),
     error = Color(0xFFFF7A7A),
     onError = Color(0xFF2A0A0A),
     errorContainer = Color(0xFF3A1010),
     onErrorContainer = Color(0xFFFFDAD6),
-    outline = Color(0xFF2A3344),
-    outlineVariant = Color(0xFF1B2130),
+    outline = Color(0xFF332B45),
+    outlineVariant = Color(0xFF211B2D),
     scrim = Color(0xFF000000)
 )
 
 private val AppCyan: Color
     @Composable get() =
         if (MaterialTheme.colorScheme.background.luminance() < 0.5f) Color(0xFF35E0FF)
-        else Color(0xFF9462B8)
+        else Color(0xFF9270D9)
 
 private val AppAqua: Color
     @Composable get() =
@@ -1350,17 +1350,32 @@ private fun GozarApp(
             CenterAlignedTopAppBar(
                 title = {
                     if (screenKey == "connection") {
-                        val logoRes = if (effectiveDark) R.drawable.logo else R.drawable.logo_black
-                        Box {
-                            Image(
-                                painter = painterResource(logoRes),
-                                contentDescription = null,
-                                modifier = Modifier.height(34.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(7.dp)
+                        ) {
+                            Box(
+                                Modifier.size(29.dp).clip(RoundedCornerShape(10.dp))
+                                    .background(Brush.linearGradient(listOf(Color(0xFF8C6BFF), Color(0xFF5D3BE0)))),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Filled.Bolt, contentDescription = null, tint = Color.White, modifier = Modifier.size(19.dp))
+                            }
+                            Text(
+                                "pix",
+                                color = MaterialTheme.colorScheme.primary,
+                                fontFamily = AntaFont,
+                                fontSize = 29.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = (-1.2).sp
                             )
-                            Image(
-                                painter = painterResource(logoRes),
-                                contentDescription = t("app_title"),
-                                modifier = Modifier.height(34.dp)
+                            Text(
+                                "VPN",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.8.sp,
+                                modifier = Modifier.padding(top = 10.dp)
                             )
                         }
                     } else {
@@ -1799,7 +1814,7 @@ private fun ConnectionScreen(
                             }
                         }
                         Row(
-                            Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 11.dp),
+                            Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(Modifier.weight(1f)) {
@@ -9273,7 +9288,7 @@ private fun QrDialog(link: String, title: String, onDismiss: () -> Unit) {
     val t = stringsFn()
     val context = LocalContext.current
     val accent = MaterialTheme.colorScheme.primary
-    val qrBg = Color(0xFF0E1422)
+    val qrBg = Color(0xFF11101B)
     val qrFg = lerp(Color.White, accent, 0.06f)
     val bmp = remember(link, qrBg, qrFg) {
         ConfigShare.qrBitmap(link, darkColor = qrFg.toArgb(), lightColor = qrBg.toArgb())
