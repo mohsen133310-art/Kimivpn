@@ -260,7 +260,7 @@ object Strings {
         "shop_soon" to "Coming soon",
         "shop_soon_sub" to "Buy a subscription right inside the app",
         "settings" to "Settings",
-        "app_title" to "Pix",
+        "app_title" to "PIX",
         "appearance" to "Appearance",
         "choose_server" to "Choose server",
         "add_config_title" to "Add config",
