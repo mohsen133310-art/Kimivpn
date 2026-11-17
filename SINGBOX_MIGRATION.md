@@ -1,6 +1,6 @@
-# KimiVPN — sing-box migration
+# Pix — sing-box migration
 
-The migration is being performed on the `migration/sing-box-core` branch. The Compose UI has been kept unchanged.
+The migration is being performed on the `migration/sing-box-core` branch. The app has been rebranded to Pix and the main connection screen now uses the new violet visual identity.
 
 ## Engine
 
