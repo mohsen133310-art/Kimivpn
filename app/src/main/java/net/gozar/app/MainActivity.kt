@@ -1778,19 +1778,20 @@ private fun ConnectionScreen(
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(RoundedCornerShape(24.dp))
                         .clickable { onOpenPicker() },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.45f))
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                 ) {
                     Column(Modifier.fillMaxWidth()) {
                         Row(
                             Modifier.fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.18f))
-                                .padding(horizontal = 10.dp, vertical = 5.dp),
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.09f))
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
@@ -1932,7 +1933,7 @@ private fun ConnectionScreen(
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .height(64.dp)
+                        .height(72.dp)
                         .pointerInput(Unit) {
                             awaitEachGesture {
                                 awaitFirstDown(requireUnconsumed = false)
@@ -1964,17 +1965,13 @@ private fun ConnectionScreen(
                     Box(
                         Modifier.matchParentSize()
                             .graphicsLayer { scaleX = press; scaleY = press }
-                            .clip(RoundedCornerShape(20.dp))
+                            .clip(RoundedCornerShape(24.dp))
                             .background(
                                 Brush.horizontalGradient(
-                                    listOf(
-                                        stateTint.copy(alpha = 0.18f),
-                                        stateTint.copy(alpha = 0.30f),
-                                        stateTint.copy(alpha = 0.18f)
-                                    )
+                                    listOf(stateTint, lerp(stateTint, Color.White, 0.16f), stateTint)
                                 )
                             )
-                            .border(1.6.dp, stateTint.copy(alpha = 0.70f), RoundedCornerShape(20.dp))
+                            .border(1.dp, Color.White.copy(alpha = 0.24f), RoundedCornerShape(24.dp))
                             .clickable(enabled = enabled || picking) {
                                 when {
                                     picking -> onCancelPick()
@@ -1985,7 +1982,7 @@ private fun ConnectionScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         ConnectSweep(
-                            color = stateTint,
+                            color = Color.White.copy(alpha = 0.65f),
                             active = conn == Connection.CONNECTING,
                             modifier = Modifier.matchParentSize()
                         )
@@ -2025,7 +2022,7 @@ private fun ConnectionScreen(
                                         else -> Icons.Filled.Bolt
                                     },
                                     contentDescription = null,
-                                    tint = stateTint,
+                                    tint = Color.White,
                                     modifier = Modifier
                                         .size(22.dp)
                                         .graphicsLayer { rotationZ = if (spinning) spin else 0f }
@@ -2040,7 +2037,7 @@ private fun ConnectionScreen(
                                     },
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = stateTint,
+                                    color = Color.White,
                                     maxLines = 1,
                                     softWrap = false
                                 )
@@ -6697,14 +6694,12 @@ private fun AboutScreen(modifier: Modifier = Modifier) {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName
         }.getOrNull() ?: "\u2014"
     }
-    val xrayVersion = remember { xrayCoreVersion() }
+    val engineVersion = remember { "sing-box 1.14.4" }
     var privacyOpen by remember { mutableStateOf(false) }
     var checking by remember { mutableStateOf(false) }
     var updateStatus by remember { mutableStateOf<String?>(null) }
     var updateUrl by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val logoRes = if (isDark) R.drawable.logo else R.drawable.logo_black
     val primary = MaterialTheme.colorScheme.primary
 
     Column(
@@ -6712,12 +6707,22 @@ private fun AboutScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(top = 2.dp)) {
-            PulseHalo(color = primary, size = 190.dp)
-            Image(
-                painter = painterResource(logoRes),
-                contentDescription = null,
-                modifier = Modifier.size(152.dp)
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(top = 8.dp).size(164.dp)) {
+            PulseHalo(color = primary, size = 154.dp)
+            Box(
+                Modifier.size(92.dp).clip(RoundedCornerShape(30.dp))
+                    .background(Brush.linearGradient(listOf(Color(0xFF9878FF), Color(0xFF5D3BE0))),
+                    contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Filled.Bolt, contentDescription = null, tint = Color.White, modifier = Modifier.size(52.dp))
+            }
+            Text(
+                "pix",
+                color = primary,
+                fontFamily = AntaFont,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 1.dp)
             )
         }
 
@@ -6733,14 +6738,14 @@ private fun AboutScreen(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             AboutChip(t("app_version"), appVersion)
-            AboutChip(t("xray_version"), xrayVersion)
+            AboutChip(t("engine_version"), engineVersion)
         }
 
         AboutCard(
             icon = Icons.Filled.Hub,
             title = t("source_code"),
-            value = "github.com/SuOracle/GRoute",
-            onClick = { runCatching { uriHandler.openUri("https://github.com/SuOracle/GRoute") } }
+            value = "github.com/mohsen133310-art/Kimivpn",
+            onClick = { runCatching { uriHandler.openUri("https://github.com/mohsen133310-art/Kimivpn") } }
         )
 
         AboutCard(
